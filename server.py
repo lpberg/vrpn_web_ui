@@ -1,14 +1,12 @@
 from flask import Flask
 from flask import request
 from flask import render_template
-
 import socket
+import json
 
 UDP_IP = "127.0.0.1"
 UDP_PORT = 7777
 
-
-import json
 
 def encodeButton(num, state):
 	return json.dumps({
@@ -31,7 +29,6 @@ def encodeTracker(num, quat, pos):
 		'pos': pos
 	})
 
-
 def sendToVRPN(message):
 	sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	sock.sendto(message, (UDP_IP, UDP_PORT))
@@ -40,12 +37,13 @@ def sendToVRPN(message):
 app = Flask(__name__)
 
 @app.route("/")
-def hello():
+def page():
 		return render_template('index.html')
 	
 @app.route("/button/<button_name>", methods=['POST'])
 def pressButton(button_name):
 	print("Request data", request.form["state"])
+	#converting state to Python boolean values
 	if request.form["state"] == "true":
 		data = True
 	else:
@@ -64,8 +62,6 @@ def updateAnalog(channel):
 # def show_post(string):
     # return 'Posted %s' % string
 
-
-	
 if __name__ == "__main__":
 	app.debug = True
 	app.run() #local machine access only
