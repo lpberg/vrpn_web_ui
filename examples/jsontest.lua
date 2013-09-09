@@ -10,7 +10,7 @@ end
 
 
 addButtonFrameActions = function()
-	for i = 0, 5, 1 do
+	for i = 0, 3, 1 do
 		Actions.addFrameAction(function()
 			local drawBtn = gadget.DigitalInterface("JSButton"..i)
 			while true do
@@ -24,7 +24,7 @@ addButtonFrameActions = function()
 end
 
 addAnalogFrameActions = function()
-	for i = 0, 5, 1 do
+	for i = 0, 1, 1 do
 		Actions.addFrameAction(function()
 			local drawBtn = gadget.AnalogInterface("JSAnalog"..i)
 			local first_data = drawBtn.data
