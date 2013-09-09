@@ -10,91 +10,44 @@
 		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="{{ url_for('static', filename='helper.js') }}"></script>
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='base.css') }}">
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='layout.css') }}">
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='skeleton.css') }}">
+	
 </head>
 <body>
 
 	<div class="container">
-	<h3>VRPN Web UI</h3>
+		<h3>VRPN Web UI</h3>
+		
+		<h4>Analogs</h4>
+		<hr style="margin-bottom:5px">
+		<div id="analog_controls">
+			Analog Value:<input id="analogInputBox" type="text" value="0">
+			<input type="submit" id="analogSubmitButton" value="Update Analog"><br>
+		</div> <!-- END analog_controls -->
+		
+		<h4>Buttons<h4>
+		<hr style="margin-bottom:5px">
+		<div id="button_controls">
+			<input id="button0" type="button" value="Button 0">
+			<input id="button1" type="button" value="Button 1">
+			<input id="button2" type="button" value="Button 2">
+		</div><!-- END button_controls -->
+	</div><!-- END container -->
 	
-	<h4>Analog Field</h4>
-	<hr style="margin-bottom:5px">
-	<div id="analog_controls">
-	Analog Value:<input id="analogInputBox" type="text" value="100">
-	<input type="submit" id="analogSubmitButton" value="Update Analog"><br>
-	</div> <!-- END analog_controls -->
-	
-	<h4>Buttons<h4>
-	<hr style="margin-bottom:5px">
-	<div id="button_controls">
-	<input id="b0" type="button" value="Button 0">
-	<input id="b1" type="button" value="Button 1">
-	<input id="b2" type="button" value="Button 2">
-	
-	</div> <!-- END button_controls -->
-	</div>
 
-<script>
-function reportAnalog(num, val) {
-	$.post(
-		'/analog/' + num,
-		{ state: val },
-		function() { console.log("report analog " + num + " = " + val); }
-	);
-}
-function setAnalogBehavior(elt,inputVal,channel) {
-	$(elt).click(function() {
-			reportAnalog(channel, $(inputVal).val());
-			return false; // don't do what you were going to do (don't submit the form)
-		});
-}
-function setButtonBehavior(elt, num) {
-
-	elt.mousedown(function() {
-		$.post(
-			'/button/' + num,
-			{ state: true },
-			function() { console.log("down " + num); }
-		);
-		$(this).data("pressed", true);
-	}).on('mouseup mouseleave', function() {
-		if (!$(this).data("pressed")) {
-			return;
-		}
-		$.post(
-			'/button/' + num,
-			{ state: false },
-			function() { console.log("up " + num); }
-		);
-		$(this).data("pressed", false)
+	<script>
+	$(document).ready(function() {	
+		setButtonBehavior($("#button0"), 0);
+		setButtonBehavior($("#button1"), 1);
+		setButtonBehavior($("#button2"), 2);
+		setAnalogBehavior($("#analogSubmitButton"),$("#analogInputBox"),0);
+		//makeButton(4, "Button 4");
+		//makeAnalogInput("Dynamic Analog",12,1);
 	});
-	/// Not worth my time right now to handle clicking, leaving, and coming back.
-}
-
-function makeButton(num,label) {
-	setButtonBehavior($('<input name="button' + num + '" type="button" value="' + label + '">').appendTo("#button_controls"), num);
-}
-
-function makeAnalogInput(label,defaultVal,channel) {
-	$input_field = $('<input id="'+label+'" type="text" value="' + defaultVal + '">').appendTo("#analog_controls");
-	$submit_button = $('<input id="'+label+'Submit" type="submit" value="Update ' + label + '">').appendTo("#analog_controls");
-	setAnalogBehavior($submit_button, $input_field, channel);
-}
-
-$(document).ready(function() {
-	
-	setButtonBehavior($("#b0"), 0);
-	setButtonBehavior($("#b1"), 1);
-	setButtonBehavior($("#b2"), 2);
-	makeButton(4, "Button 4");
-	makeButton(5, "Button 5");
-	setAnalogBehavior($("#analogSubmitButton"),$("#analogInputBox"),0);
-	makeAnalogInput("Dynamic Analog",12,1);
-	
-});
-</script>
+	</script>
 
 </body>
 </html>
