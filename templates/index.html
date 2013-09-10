@@ -31,18 +31,16 @@
 		<h4>Buttons<h4>
 		<hr style="margin-bottom:5px">
 		<div id="button_controls">
-			<input id="button0" type="button" value="Button 0">
-			<input id="button1" type="button" value="Button 1">
-			<input id="button2" type="button" value="Button 2">
+			<input data-vrpn-button="0" type="button" value="Button 0">
+			<input data-vrpn-button="1" type="button" value="Button 1">
+			<input data-vrpn-button="2" type="button" value="Button 2">
 		</div><!-- END button_controls -->
 	</div><!-- END container -->
 	
 
 	<script>
-	$(document).ready(function() {	
-		setButtonBehavior($("#button0"), 0);
-		setButtonBehavior($("#button1"), 1);
-		setButtonBehavior($("#button2"), 2);
+	$(document).ready(function() {
+		findAndActivateButtons();
 		setAnalogBehavior($("#analogSubmitButton"),$("#analogInputBox"),0);
 		//makeButton(4, "Button 4");
 		//makeAnalogInput("Dynamic Analog",12,1);

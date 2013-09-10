@@ -43,3 +43,11 @@ function makeAnalogInput(label,defaultVal,channel) {
 	$submit_button = $('<input id="'+label+'Submit" type="submit" value="Update ' + label + '">').appendTo("#analog_controls");
 	setAnalogBehavior($submit_button, $input_field, channel);
 }
+
+function findAndActivateButtons() {
+	$('[data-vrpn-button]').each(
+		function() {
+			setButtonBehavior($(this), $(this).attr("data-vrpn-button"));
+		}
+	)
+}
