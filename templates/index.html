@@ -23,11 +23,11 @@
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='layout.css') }}">
 	<!--Jquery UI CSS-->
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='smoothness/jquery-ui-1.10.3.custom.css') }}">
+
 </head>
 <body>
-	<div class="container">
+	<div class="container" style="margin-top:2%;">
 	<h3>VRPN Web UI</h3>
-		
 	<h4>Analogs</h4>
 	<hr style="margin-bottom:5px">
 	<div id="analog_controls">
@@ -35,7 +35,7 @@
 		<input type="button" id="analogSubmitButton" value="Update Analog"><br>
 	</div> <!-- END analog_controls -->
 	<br>
-	<h4>Buttons<h4>
+	<h4>Buttons (VRPN Buttons)</h4>
 	<hr style="margin-bottom:5px">
 	<div id="button_controls">
 		<input data-vrpn-button="0" type="button" value="Button 0">
@@ -43,26 +43,47 @@
 		<input data-vrpn-button="2" type="button" value="Button 2">
 	</div><!-- END button_controls -->
 	<br>
-	<h4>Analog Slider</h4>
+	
+	<h4>Analog Slider (VRPN Analog)</h4>
 	<hr style="margin-bottom:5px">
 	<div id="slider_controls"></div>
 	<br>
-	<h4>Toggle Button</h4>
+	
+	<h4>Toggle Button (VRPN Button)</h4>
 	<hr style="margin-bottom:5px">
 	<div id="radio_controls"></div>
+	<br>
+	
+	<h4>Grid Toggles (VRPN Buttons)</h4>
+	<hr style="margin-bottom:5px">
+	<div id="grid_controls"></div>
+	
+	<ol id="selectable">
+		<li vrpn-button-number="11" id="one" class="ui-widget-content">Item 1</li>
+		<li vrpn-button-number="12" id="two" class="ui-widget-content">Item 2</li>
+		<li vrpn-button-number="13" id="three" class="ui-widget-content">Item 3</li>
+		<li vrpn-button-number="14" id="four" class="ui-widget-content">Item 4</li>
+		<li vrpn-button-number="15" id="five" class="ui-widget-content">Item 5</li>
+		<li vrpn-button-number="16" id="six" class="ui-widget-content">Item 6</li>
+	</ol>
 		
 	</div><!-- END container -->
 	
 	<script>
 	<!--document ready function creates objects and events for html-->
 	$(document).ready(function() {
-		makeToggleSwitch(12,"My Switch Box","Enable","Disable");
-		makeAnalogSlider("SliderLabel",10);
+	
+		setGridButtonListBehavior($("#selectable"));
+		makeToggleSwitch(12,"My Switch Box","Enable","Disable").appendTo("#radio_controls");
+		makeAnalogSlider("SliderLabel",10).appendTo("#slider_controls");
 		findAndActivateButtons();
-		setAnalogBehavior($("#analogSubmitButton"),$("#analogInputBox"),0);
-		makeButton(3, "Button 3");
-		makeButton(4, "Button 4");
-		makeAnalogInput("Dynamic Analog",12,1);
+		
+		makeButton("Button 3",3).appendTo("#button_controls");
+		makeButton("Button 4",4).appendTo("#button_controls");
+		makeAnalogFormInput("Dynamic Analog",12,1).appendTo("#analog_controls");
+		
+		//manual operations
+		setAnalogFormBehavior($("#analogSubmitButton"),$("#analogInputBox"),0);
 	});
 	</script>
 </body>
