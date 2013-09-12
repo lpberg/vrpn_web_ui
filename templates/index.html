@@ -5,47 +5,65 @@
 <!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
 <head>
 	<meta charset="utf-8">
-	<title>vrpn web interface</title>\
+	<title>vrpn web interface</title>
 	<!--[if lt IE 9]>
 		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
+	<!--Jquery-->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<!--external JavaScript functions-->
 	<script src="{{ url_for('static', filename='helper.js') }}"></script>
+	<!--Jquery UI -->
+	<script src="{{ url_for('static', filename='jquery-ui-1.10.3.custom.js') }}"></script>
+	<!--required for touch devices (Jquery UI does not support touch)-->
+	<script src="{{ url_for('static', filename='jquery.ui.touch-punch.min.js') }}"></script>
+	<!--Skeleton CSS (3)-->
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='base.css') }}">
-	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='layout.css') }}">
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='skeleton.css') }}">
-	
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='layout.css') }}">
+	<!--Jquery UI CSS-->
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='smoothness/jquery-ui-1.10.3.custom.css') }}">
 </head>
 <body>
-
 	<div class="container">
-		<h3>VRPN Web UI</h3>
+	<h3>VRPN Web UI</h3>
 		
-		<h4>Analogs</h4>
-		<hr style="margin-bottom:5px">
-		<div id="analog_controls">
-			Analog Value:<input id="analogInputBox" type="text" value="0">
-			<input type="submit" id="analogSubmitButton" value="Update Analog"><br>
-		</div> <!-- END analog_controls -->
+	<h4>Analogs</h4>
+	<hr style="margin-bottom:5px">
+	<div id="analog_controls">
+		<input id="analogInputBox" type="text" value="0" style="display: inline-block;">
+		<input type="button" id="analogSubmitButton" value="Update Analog"><br>
+	</div> <!-- END analog_controls -->
+	<br>
+	<h4>Buttons<h4>
+	<hr style="margin-bottom:5px">
+	<div id="button_controls">
+		<input data-vrpn-button="0" type="button" value="Button 0">
+		<input data-vrpn-button="1" type="button" value="Button 1">
+		<input data-vrpn-button="2" type="button" value="Button 2">
+	</div><!-- END button_controls -->
+	<br>
+	<h4>Analog Slider</h4>
+	<hr style="margin-bottom:5px">
+	<div id="slider_controls"></div>
+	<br>
+	<h4>Toggle Button</h4>
+	<hr style="margin-bottom:5px">
+	<div id="radio_controls"></div>
 		
-		<h4>Buttons<h4>
-		<hr style="margin-bottom:5px">
-		<div id="button_controls">
-			<input data-vrpn-button="0" type="button" value="Button 0">
-			<input data-vrpn-button="1" type="button" value="Button 1">
-			<input data-vrpn-button="2" type="button" value="Button 2">
-		</div><!-- END button_controls -->
 	</div><!-- END container -->
 	
-
 	<script>
+	<!--document ready function creates objects and events for html-->
 	$(document).ready(function() {
+		makeToggleSwitch(12,"My Switch Box","Enable","Disable");
+		makeAnalogSlider("SliderLabel",10);
 		findAndActivateButtons();
 		setAnalogBehavior($("#analogSubmitButton"),$("#analogInputBox"),0);
-		//makeButton(4, "Button 4");
-		//makeAnalogInput("Dynamic Analog",12,1);
+		makeButton(3, "Button 3");
+		makeButton(4, "Button 4");
+		makeAnalogInput("Dynamic Analog",12,1);
 	});
 	</script>
-
 </body>
 </html>
