@@ -1,34 +1,69 @@
-function setToggleSwitchBehavior(switchElt, num, buttonsetName, first, second) {
-    switchElt.buttonset();
-	switchElt.change(function () {
-        var buttonstatus = true;
-        var console_string = "";
-        var value = $(this).find(":checked").attr('data-vrpn-button-state');
-        if (value == "true") {
-            buttonstatus = true;
-            console_string = first;
-        } else {
-            buttonstatus = false;
-            console_string = second;
-        }
-
-        $.post(
-            '/button/' + num, {
-                state: buttonstatus
-            },
-            function () {
-                console.log("Button Toggle: " + num + " - " + console_string);
-            }
-        );
-		return true;
-    });
+function setGridButtonListBehavior(grid) {
+	grid.bind("mousedown", function(e) {
+		e.metaKey = true;
+	}).selectable({
+		selecting: function() {
+			 $(".ui-selecting", this ).each(function() {
+				buttonNumber = $(this).attr("vrpn-button-number");
+				$.post(
+					'/button/' + buttonNumber, {
+						state: true
+					},
+					function () {
+						console.log("button "+buttonNumber+ " is down");
+					}
+				);
+			 });
+		 },
+		 unselecting: function() {
+			 $(".ui-unselecting", this ).each(function() {
+				buttonNumber = $(this).attr("vrpn-button-number");
+				$.post(
+					'/button/' + buttonNumber, {
+						state: false
+					},
+					function () {
+						console.log("button "+buttonNumber+ " is up");
+					}
+				);
+			 });
+		 }
+	});
 
 }
 
-function makeToggleSwitch(num,label,first,second) {
-	var buttonsetName = "radio"+label;
-	$('<text>'+label+'</text>').appendTo("#radio_controls");
-	
+function setToggleSwitchBehavior(switchElt, buttonNumber, state1, state2) {
+	switchElt.buttonset();
+	switchElt.change(function () {
+		var buttonstatus = true;
+		var button_state_string = "";
+		var value = $(this).find(":checked").attr('data-vrpn-button-state');
+		//first radio input has attribute data-vrpn-button-state with value true
+		if (value == "true") {
+			buttonstatus = true;
+			button_state_string = state1;
+		} else {
+			buttonstatus = false;
+			button_state_string = state2;
+		}
+
+		$.post(
+			'/button/' + buttonNumber, {
+				state: buttonstatus
+			},
+			function () {
+				console.log("button toggle: " + buttonNumber + " has state " + button_state_string);
+			}
+		);
+		return true;
+	});
+
+}
+
+function makeToggleSwitch(num, label, first, second) {
+	var buttonsetName = "radio" + label;
+	$('<text>' + label + '</text>').appendTo("#radio_controls");
+
 	var myItems = [];
 	myItems.push('<div id="');
 	myItems.push(buttonsetName);
@@ -42,85 +77,103 @@ function makeToggleSwitch(num,label,first,second) {
 	myItems.push('</label>');
 	myItems.push('</form>');
 	myItems.push('</div>');
-	var buttonset_div = $(myItems.join("")).appendTo("#radio_controls");
-	setToggleSwitchBehavior(buttonset_div,num,buttonsetName,first,second);
+	// var buttonset_div = $(myItems.join("")).appendTo("#radio_controls");
+	var buttonset_div = $(myItems.join(""));
+	setToggleSwitchBehavior(buttonset_div, num, first, second);
+	return buttonset_div;
 }
 
-function reportAnalog(num, val) {
+function reportAnalog(analogChannel, val) {
 	$.post(
-		'/analog/' + num,
-		{ state: val },
-		function() { console.log("report analog " + num + " = " + val); }
+		'/analog/' + analogChannel, {
+			state: val
+		},
+		function () {
+			console.log("report analog " + analogChannel + " = " + val);
+		}
 	);
 }
-function setAnalogBehavior(elt,inputVal,channel) {
-	$(elt).click(function() {
-			reportAnalog(channel, $(inputVal).val());
-			return false; // don't do what you were going to do (don't submit the form)
-		});
-}
-function setButtonBehavior(elt, num) {
 
-	elt.mousedown(function() {
+function setAnalogFormBehavior(elt, inputVal, channel) {
+	elt.click(function () {
+		reportAnalog(channel, $(inputVal).val());
+		return false; // don't do what you were going to do (don't submit the form)
+	});
+}
+
+function setButtonBehavior(buttonElement, buttonNumber) {
+
+	buttonElement.mousedown(function () {
 		$.post(
-			'/button/' + num,
-			{ state: true },
-			function() { console.log("down " + num); }
+			'/button/' + buttonNumber, {
+				state: true
+			},
+			function () {
+				console.log("button "+buttonNumber+ " is down");
+			}
 		);
 		$(this).data("pressed", true);
-	}).on('mouseup mouseleave', function() {
+	}).on('mouseup mouseleave', function () {
 		if (!$(this).data("pressed")) {
 			return;
 		}
 		$.post(
-			'/button/' + num,
-			{ state: false },
-			function() { console.log("up " + num); }
+			'/button/' + buttonNumber, {
+				state: false
+			},
+			function () {
+				console.log("button "+buttonNumber+ " is up");
+			}
 		);
 		$(this).data("pressed", false)
 	});
 	// Not worth my time right now to handle clicking, leaving, and coming back.
 }
 
-function makeButton(num,label) {
-	setButtonBehavior($('<input data-vrpn-button="'+num+'" name="button' + num + '" type="button" value="' + label + '">').appendTo("#button_controls"), num);
+function makeButton(buttonLabel,buttonNumber) {
+	button = $('<input data-vrpn-button="' + buttonNumber + '" name="button' + buttonNumber + '" type="button" value="' + buttonLabel + '">');
+	setButtonBehavior(button, buttonNumber);
+	return button;
 }
 
-function setAnalogSliderBehavior($label,$slider,label,channel,min,max) {
+function setAnalogSliderBehavior(label_div, slider_div, label, channel, min, max) {
 	var min = min || 0;
 	var max = max || 100;
-	$slider.slider(
-	{
-		value:min,
+	slider_div.slider({
+		value: min,
 		range: "min",
 		min: min,
 		max: max,
 		step: 1,
-		slide: function( event, ui ) {
-		  $label.html(label+": "+ui.value );
-		  reportAnalog(channel,ui.value);
-	}
+		slide: function (event, ui) {
+			label_div.html(label + ": " + ui.value);
+			reportAnalog(channel, ui.value);
+		}
 	});
-	$label.html(label+": "+min);
+	//set initial value to be min on display
+	label_div.html(label + ": " + min);
 
 }
 
-function makeAnalogSlider(label,channel,min,max) {
-	$label = $('<div id="'+label+'" style="margin-bottom:10px"></div>').appendTo("#slider_controls");
-	$slider = $('<div id="'+label+channel+'" style="margin-bottom:25px"></div>').appendTo("#slider_controls");
-	setAnalogSliderBehavior($label,$slider,label,channel,min,max);
-
+function makeAnalogSlider(label, analogChannel, min, max) {
+	casing_div = $('<div id="' + label + 'casing"></div>');
+	label_div = $('<div id="' + label + '" style="margin-bottom:10px"></div>').appendTo(casing_div);
+	slider = $('<div id="' + label + analogChannel + '" style="margin-bottom:25px"></div>').appendTo(casing_div);
+	setAnalogSliderBehavior(label_div, slider, label, analogChannel, min, max);
+	return casing_div;
 }
 
-function makeAnalogInput(label,defaultVal,channel) {
-	$input_field = $('<input id="'+label+'" type="text" value="' + defaultVal + '" style="display: inline-block;">').appendTo("#analog_controls");
-	$submit_button = $('<input id="'+label+'Submit" type="submit" value="Update ' + label + '">').appendTo("#analog_controls");
-	setAnalogBehavior($submit_button, $input_field, channel);
+function makeAnalogFormInput(label, defaultVal, analogChannel) {
+	casing_div = $('<div id="' + label + 'casing"></div>');
+	input_field = $('<input id="' + label + '" type="text" value="' + defaultVal + '" style="display: inline-block;">').appendTo(casing_div);
+	submit_button = $('<input id="' + label + 'Submit" type="submit" value="Update ' + label + '">').appendTo(casing_div);
+	setAnalogFormBehavior(submit_button, input_field, analogChannel);
+	return casing_div;
 }
 
 function findAndActivateButtons() {
 	$('[data-vrpn-button]').each(
-		function() {
+		function () {
 			setButtonBehavior($(this), $(this).attr("data-vrpn-button"));
 		}
 	)
