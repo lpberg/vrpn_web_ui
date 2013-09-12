@@ -7,6 +7,12 @@ import json
 UDP_IP = "127.0.0.1"
 UDP_PORT = 7777
 
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
 
 def encodeButton(num, state):
 	return json.dumps({
@@ -54,8 +60,11 @@ def pressButton(button_name):
 @app.route("/analog/<int:channel>", methods=['POST'])
 def updateAnalog(channel):
 	print("Request data", request.form["state"])
-	data = float(request.form["state"])
-	sendToVRPN(encodeAnalog(channel, data))
+	if is_number(request.form["state"]):
+		data = float(request.form["state"])
+		sendToVRPN(encodeAnalog(channel, data))
+	else:
+		print("Request was not a number.")
 	return "OK"
 
 # @app.route('/text/<string>', methods=['POST', 'GET'])
@@ -64,5 +73,5 @@ def updateAnalog(channel):
 
 if __name__ == "__main__":
 	app.debug = True
-	app.run() #local machine access only
-	# app.run(host='0.0.0.0') #make server externally visible
+	# app.run() #local machine access only
+	app.run(host='0.0.0.0') #make server externally visible
