@@ -23,67 +23,47 @@
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='layout.css') }}">
 	<!--Jquery UI CSS-->
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='smoothness/jquery-ui-1.10.3.custom.css') }}">
-
+		
 </head>
 <body>
 	<div class="container" style="margin-top:2%;">
-	<h3>VRPN Web UI</h3>
-	<h4>Analogs</h4>
-	<hr style="margin-bottom:5px">
-	<div id="analog_controls">
-		<input id="analogInputBox" type="text" value="0" style="display: inline-block;">
-		<input type="button" id="analogSubmitButton" value="Update Analog"><br>
-	</div> <!-- END analog_controls -->
-	<br>
-	<h4>Buttons (VRPN Buttons)</h4>
-	<hr style="margin-bottom:5px">
-	<div id="button_controls">
-		<input data-vrpn-button="0" type="button" value="Button 0">
-		<input data-vrpn-button="1" type="button" value="Button 1">
-		<input data-vrpn-button="2" type="button" value="Button 2">
-	</div><!-- END button_controls -->
-	<br>
-	
-	<h4>Analog Slider (VRPN Analog)</h4>
-	<hr style="margin-bottom:5px">
-	<div id="slider_controls"></div>
-	<br>
-	
-	<h4>Toggle Button (VRPN Button)</h4>
-	<hr style="margin-bottom:5px">
-	<div id="radio_controls"></div>
-	<br>
-	
-	<h4>Grid Toggles (VRPN Buttons)</h4>
-	<hr style="margin-bottom:5px">
-	<div id="grid_controls"></div>
-	
-	<ol id="selectable">
-		<li vrpn-button-number="11" id="one" class="ui-widget-content">Item 1</li>
-		<li vrpn-button-number="12" id="two" class="ui-widget-content">Item 2</li>
-		<li vrpn-button-number="13" id="three" class="ui-widget-content">Item 3</li>
-		<li vrpn-button-number="14" id="four" class="ui-widget-content">Item 4</li>
-		<li vrpn-button-number="15" id="five" class="ui-widget-content">Item 5</li>
-		<li vrpn-button-number="16" id="six" class="ui-widget-content">Item 6</li>
-	</ol>
+		
+		<h2>VRPN Web UI</h2>
+		<div class="mainContent">
+		
+		<h4>Text</h4>
+		<hr style="margin-bottom:5px">
+		<div id="text_controls"></div> 
+		
+		<h4>Analogs (VRPN Analog Channels)</h4>
+		<hr style="margin-bottom:5px">
+		<div id="analog_controls"></div> <br>
+
+		<h4>Buttons (VRPN Buttons)</h4>
+		<hr style="margin-bottom:5px">
+		<div id="button_controls"></div>
+
 		
 	</div><!-- END container -->
 	
 	<script>
 	<!--document ready function creates objects and events for html-->
 	$(document).ready(function() {
-	
-		setGridButtonListBehavior($("#selectable"));
-		makeToggleSwitch(12,"My Switch Box","Enable","Disable").appendTo("#radio_controls");
-		makeAnalogSlider("SliderLabel",10).appendTo("#slider_controls");
-		findAndActivateButtons();
-		
-		makeButton("Button 3",3).appendTo("#button_controls");
-		makeButton("Button 4",4).appendTo("#button_controls");
-		makeAnalogFormInput("Dynamic Analog",12,1).appendTo("#analog_controls");
-		
-		//manual operations
-		setAnalogFormBehavior($("#analogSubmitButton"),$("#analogInputBox"),0);
+		//create a text input box  - makeTextFormInput(Label, default_text)
+		makeTextFormInput("ValueByText","Sample Text").appendTo("#text_controls");
+		//create an analog input box - makeAnalogFormInput(label, defaultVal, VRPN_analog_channel)
+		makeAnalogFormInput("Dynamic Analog",0,0).appendTo("#analog_controls");
+		//create a button - makeButton(button_name, VRPN_button_number)
+		makeButton("Button 0",0).appendTo("#button_controls");
+		//create a toggle switch button - makeToggleSwitch(VRPN_button_number, label, state1, state2)
+		makeToggleSwitch(12,"My Switch Box","Enable","Disable").appendTo("#button_controls");
+		//create an analog slider - makeAnalogSlider(label, VRPN_analog_channel, lower_value, upper_value)
+		makeAnalogSlider("Slider Label",10,0,1).appendTo("#analog_controls");
+		//create a set of toggle buttons in a grid (2 steps)
+		//1) create a list of button labels with VRPN_button_numbers
+		var myGridButtons = [["button_15", 15], ["button_16", 16], ["button_17", 17]];
+		//2) create grid - makeGridButtonList(label,listOfButtons)
+		makeGridButtonList("My grid of Toggle Buttons",myGridButtons).appendTo("#button_controls");	
 	});
 	</script>
 </body>
