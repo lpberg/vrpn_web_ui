@@ -10,7 +10,7 @@
          <button_count>100</button_count>
          <analog_count>128</analog_count>
          <min>0</min>
-         <max>1000000</max>
+         <max>1</max>
       </vrpn>
       <input_manager name="VRPN JSON Input Manager" version="2">
          <driver>VRPN_drv</driver>
