@@ -12,9 +12,16 @@
          <min>0</min>
          <max>1</max>
       </vrpn>
-      <input_manager name="VRPN JSON Input Manager" version="2">
+      <input_manager name="VRPN Manager" version="2">
          <driver>VRPN_drv</driver>
       </input_manager>
+      <vrpntext name="JSTextServer" version="1">
+         <device>Jsonnet@127.0.0.1</device>
+      </vrpntext>
+	   <string_proxy name="JSText" version="1">
+         <device>JSTextServer</device>
+         <unit>0</unit>
+      </string_proxy>
       <digital_proxy name="JSButton0" version="1">
 	      <device>VRPN_JSON</device>
 	      <unit>0</unit>
