@@ -12,7 +12,13 @@ def is_number(s):
         float(s)
         return True
     except ValueError:
-        return False
+        return False 
+
+def encodeText(text):
+	return json.dumps({
+		'type': 4,
+		'data': text
+	})
 
 def encodeButton(num, state):
 	return json.dumps({
@@ -57,12 +63,19 @@ def pressButton(button_name):
 	sendToVRPN(encodeButton(button_name, data))
 	return "OK"
 
+@app.route("/text/<text_string>", methods=['POST'])
+def sendText(text_string):
+	print("Request data", request.form["data"])
+	data = str(request.form["data"])
+	sendToVRPN(encodeText(data))
+	return "OK"
+
 @app.route("/analog/<int:channel>", methods=['POST'])
 def updateAnalog(channel):
 	print("Request data", request.form["state"])
 	if is_number(request.form["state"]):
 		data = float(request.form["state"])
-		sendToVRPN(encodeAnalog(channel, data))
+		sendToVRPN(encodeAnalog(channel,data))
 	else:
 		print("Request was not a number.")
 	return "OK"
