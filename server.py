@@ -80,10 +80,6 @@ def updateAnalog(channel):
 		print("Request was not a number.")
 	return "OK"
 
-# @app.route('/text/<string>', methods=['POST', 'GET'])
-# def show_post(string):
-    # return 'Posted %s' % string
-
 if __name__ == "__main__":
 	app.debug = True
 	# app.run() #local machine access only
