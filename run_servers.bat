@@ -1,4 +1,4 @@
 cd %~dp0/jsonserver
-start "" "vrpn_server.exe" 
+start /min "" "vrpn_server.exe" 
 cd ..
-start "python" "server.py" 
+start /min "python" "server.py" 
