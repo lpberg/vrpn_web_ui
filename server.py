@@ -51,7 +51,11 @@ app = Flask(__name__)
 @app.route("/")
 def page():
 		return render_template('index.html')
-	
+
+@app.route("/apps/<appname>")
+def loadpage(appname):
+		return render_template("apps/"+appname+'.html')
+
 @app.route("/button/<button_name>", methods=['POST'])
 def pressButton(button_name):
 	print("Request data", request.form["state"])
