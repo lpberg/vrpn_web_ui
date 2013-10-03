@@ -56,6 +56,12 @@ def page():
 def loadpage(appname):
 		return render_template("apps/"+appname+'.html')
 
+@app.route("/dynamic/index.html")
+def loadcustompage():
+		title = eval(request.args.get('title'))
+		buttons = eval(request.args.get('buttons'))
+		return render_template("/dynamic/index.html", buttons = buttons, title = title)
+
 @app.route("/button/<button_name>", methods=['POST'])
 def pressButton(button_name):
 	print("Request data", request.form["state"])
